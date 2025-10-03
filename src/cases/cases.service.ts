@@ -20,7 +20,7 @@ export class CasesService {
     if (!dto.clientId) throw new BadRequestException('clientId is required');
     const client = await this.clientRepo.findOne({ where: { id: dto.clientId, workspaceId } });
     if (!client) throw new BadRequestException('clientId not found in workspace');
-    const c = this.repo.create({ ...dto, workspaceId });
+    const c = this.repo.create({ ...dto });
     if (!c.stage) c.stage = CaseStage.PRE_CONTRATO;
     return this.repo.save(c);
   }

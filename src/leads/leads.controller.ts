@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, BadRequestException } from '@nestjs/common';
 import { CasesService } from '../cases/cases.service';
 import { CreateCaseDto } from '../cases/dto/create-case.dto';
 import { WorkspaceId } from '../common/decorators/workspace-id.decorator';
@@ -14,9 +14,16 @@ export class LeadsController {
   }
 
   @Post()
-  create(@WorkspaceId() workspaceId: string, @Body() dto: CreateCaseDto) {
-    dto.stage = CaseStage.PRE_CONTRATO;
-    return this.cases.create(workspaceId, dto);
+  async create(@WorkspaceId() workspaceId: string, @Body() dto: CreateCaseDto) {
+    try {
+      dto.stage = CaseStage.PRE_CONTRATO;
+      return await this.cases.create(workspaceId, dto);
+    } catch (error) {
+      if (error.message === 'clientId is required' || error.message === 'clientId not found in workspace') {
+        throw new BadRequestException(error.message);
+      }
+      throw error;
+    }
   }
 
   @Post(':id/convert')
