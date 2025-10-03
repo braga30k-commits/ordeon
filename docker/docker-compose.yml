@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ordeon
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - '5050:80'
+
+  whodb:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: whouser
+      POSTGRES_PASSWORD: whopass
+      POSTGRES_DB: whodb
+    ports:
+      - '5433:5432'
+    volumes:
+      - whodb_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+  whodb_data:
